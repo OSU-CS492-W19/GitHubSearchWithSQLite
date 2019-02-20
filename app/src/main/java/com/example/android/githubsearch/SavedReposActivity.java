@@ -3,7 +3,7 @@ package com.example.android.githubsearch;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class SavedSearchResultsActivity extends AppCompatActivity {
+public class SavedReposActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

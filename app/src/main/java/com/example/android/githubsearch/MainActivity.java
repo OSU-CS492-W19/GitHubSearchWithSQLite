@@ -4,15 +4,20 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,7 +29,8 @@ import android.widget.TextView;
 import com.example.android.githubsearch.utils.GitHubUtils;
 
 public class MainActivity extends AppCompatActivity
-        implements GitHubSearchAdapter.OnSearchItemClickListener, LoaderManager.LoaderCallbacks<String> {
+        implements GitHubSearchAdapter.OnSearchItemClickListener, LoaderManager.LoaderCallbacks<String>,
+            NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String REPOS_ARRAY_KEY = "githubRepos";
@@ -36,8 +42,9 @@ public class MainActivity extends AppCompatActivity
     private EditText mSearchBoxET;
     private TextView mLoadingErrorTV;
     private ProgressBar mLoadingPB;
-    private GitHubSearchAdapter mGitHubSearchAdapter;
+    private DrawerLayout mDrawerLayout;
 
+    private GitHubSearchAdapter mGitHubSearchAdapter;
     private GitHubUtils.GitHubRepo[] mRepos;
 
     @Override
@@ -49,6 +56,17 @@ public class MainActivity extends AppCompatActivity
         mSearchResultsRV = findViewById(R.id.rv_search_results);
         mLoadingErrorTV = findViewById(R.id.tv_loading_error);
         mLoadingPB = findViewById(R.id.pb_loading);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+
+        NavigationView navigationView = findViewById(R.id.nv_nav_drawer);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_nav_menu);
 
         mSearchResultsRV.setLayoutManager(new LinearLayoutManager(this));
         mSearchResultsRV.setHasFixedSize(true);
@@ -76,22 +94,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                Intent intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
+            case android.R.id.home:
+                mDrawerLayout.openDrawer(Gravity.START);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
-
     }
 
     private void doGitHubSearch(String query) {
@@ -158,5 +168,24 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLoaderReset(@NonNull Loader<String> loader) {
         // Nothing to do here...
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        mDrawerLayout.closeDrawers();
+        switch (menuItem.getItemId()) {
+            case R.id.nav_search:
+                return true;
+            case R.id.nav_settings:
+                Intent settingsIntent = new Intent(this, SettingsActivity.class);
+                startActivity(settingsIntent);
+                return true;
+            case R.id.nav_saved_repos:
+                Intent savedReposIntent = new Intent(this, SavedReposActivity.class);
+                startActivity(savedReposIntent);
+                return true;
+            default:
+                return false;
+        }
     }
 }
