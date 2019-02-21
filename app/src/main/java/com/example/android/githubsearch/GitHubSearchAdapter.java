@@ -7,21 +7,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.android.githubsearch.utils.GitHubUtils;
+import com.example.android.githubsearch.data.GitHubRepo;
+
+import java.util.ArrayList;
 
 public class GitHubSearchAdapter extends RecyclerView.Adapter<GitHubSearchAdapter.SearchResultViewHolder> {
-    private GitHubUtils.GitHubRepo[] mRepos;
+    private ArrayList<GitHubRepo> mRepos;
     OnSearchItemClickListener mSeachItemClickListener;
 
     public interface OnSearchItemClickListener {
-        void onSearchItemClick(GitHubUtils.GitHubRepo repo);
+        void onSearchItemClick(GitHubRepo repo);
     }
 
     GitHubSearchAdapter(OnSearchItemClickListener searchItemClickListener) {
         mSeachItemClickListener = searchItemClickListener;
     }
 
-    public void updateSearchResults(GitHubUtils.GitHubRepo[] repos) {
+    public void updateSearchResults(ArrayList<GitHubRepo> repos) {
         mRepos = repos;
         notifyDataSetChanged();
     }
@@ -29,7 +31,7 @@ public class GitHubSearchAdapter extends RecyclerView.Adapter<GitHubSearchAdapte
     @Override
     public int getItemCount() {
         if (mRepos != null) {
-            return mRepos.length;
+            return mRepos.size();
         } else {
             return 0;
         }
@@ -45,7 +47,7 @@ public class GitHubSearchAdapter extends RecyclerView.Adapter<GitHubSearchAdapte
 
     @Override
     public void onBindViewHolder(@NonNull SearchResultViewHolder holder, int position) {
-        holder.bind(mRepos[position]);
+        holder.bind(mRepos.get(position));
     }
 
     class SearchResultViewHolder extends RecyclerView.ViewHolder {
@@ -58,13 +60,13 @@ public class GitHubSearchAdapter extends RecyclerView.Adapter<GitHubSearchAdapte
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    GitHubUtils.GitHubRepo searchResult = mRepos[getAdapterPosition()];
+                    GitHubRepo searchResult = mRepos.get(getAdapterPosition());
                     mSeachItemClickListener.onSearchItemClick(searchResult);
                 }
             });
         }
 
-        public void bind(GitHubUtils.GitHubRepo repo) {
+        public void bind(GitHubRepo repo) {
             mSearchResultTV.setText(repo.full_name);
         }
     }

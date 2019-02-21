@@ -4,10 +4,12 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.example.android.githubsearch.data.GitHubRepo;
 import com.google.gson.Gson;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class GitHubUtils {
     private final static String GITHUB_SEARCH_BASE_URL = "https://api.github.com/search/repositories";
@@ -23,15 +25,8 @@ public class GitHubUtils {
 
     public static final String EXTRA_GITHUB_REPO = "GitHubUtils.GitHubRepo";
 
-    public static class GitHubRepo implements Serializable {
-        public String full_name;
-        public String description;
-        public String html_url;
-        public int stargazers_count;
-    }
-
     public static class GitHubSearchResults {
-        public GitHubRepo[] items;
+        public ArrayList<GitHubRepo> items;
     }
 
     public static String buildGitHubSearchURL(String query) {
@@ -98,7 +93,7 @@ public class GitHubUtils {
         }
     }
 
-    public static GitHubRepo[] parseGitHubSearchResults(String json) {
+    public static ArrayList<GitHubRepo> parseGitHubSearchResults(String json) {
         Gson gson = new Gson();
         GitHubSearchResults results = gson.fromJson(json, GitHubSearchResults.class);
         if (results != null && results.items != null) {

@@ -18,7 +18,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -26,7 +25,10 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.example.android.githubsearch.data.GitHubRepo;
 import com.example.android.githubsearch.utils.GitHubUtils;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements GitHubSearchAdapter.OnSearchItemClickListener, LoaderManager.LoaderCallbacks<String>,
@@ -45,7 +47,7 @@ public class MainActivity extends AppCompatActivity
     private DrawerLayout mDrawerLayout;
 
     private GitHubSearchAdapter mGitHubSearchAdapter;
-    private GitHubUtils.GitHubRepo[] mRepos;
+    private ArrayList<GitHubRepo> mRepos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +77,7 @@ public class MainActivity extends AppCompatActivity
         mSearchResultsRV.setAdapter(mGitHubSearchAdapter);
 
         if (savedInstanceState != null && savedInstanceState.containsKey(REPOS_ARRAY_KEY)) {
-            mRepos = (GitHubUtils.GitHubRepo[]) savedInstanceState.getSerializable(REPOS_ARRAY_KEY);
+            mRepos = (ArrayList<GitHubRepo>) savedInstanceState.getSerializable(REPOS_ARRAY_KEY);
             mGitHubSearchAdapter.updateSearchResults(mRepos);
         }
 
@@ -126,7 +128,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onSearchItemClick(GitHubUtils.GitHubRepo repo) {
+    public void onSearchItemClick(GitHubRepo repo) {
         Intent intent = new Intent(this, RepoDetailActivity.class);
         intent.putExtra(GitHubUtils.EXTRA_GITHUB_REPO, repo);
         startActivity(intent);
