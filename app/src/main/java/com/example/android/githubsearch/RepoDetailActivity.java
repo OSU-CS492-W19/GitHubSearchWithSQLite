@@ -45,11 +45,13 @@ public class RepoDetailActivity extends AppCompatActivity {
         mRepoBookmarkIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mIsSaved = !mIsSaved;
-                if (mIsSaved) {
-                    mRepoBookmarkIV.setImageResource(R.drawable.ic_bookmark_black_24dp);
-                } else {
-                    mRepoBookmarkIV.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
+                if (mRepo != null) {
+                    mIsSaved = !mIsSaved;
+                    if (mIsSaved) {
+                        mRepoBookmarkIV.setImageResource(R.drawable.ic_bookmark_black_24dp);
+                    } else {
+                        mRepoBookmarkIV.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
+                    }
                 }
             }
         });
