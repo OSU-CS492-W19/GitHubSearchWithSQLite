@@ -9,10 +9,10 @@ import android.widget.TextView;
 
 import com.example.android.githubsearch.data.GitHubRepo;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class GitHubSearchAdapter extends RecyclerView.Adapter<GitHubSearchAdapter.SearchResultViewHolder> {
-    private ArrayList<GitHubRepo> mRepos;
+    private List<GitHubRepo> mRepos;
     OnSearchItemClickListener mSeachItemClickListener;
 
     public interface OnSearchItemClickListener {
@@ -23,7 +23,7 @@ public class GitHubSearchAdapter extends RecyclerView.Adapter<GitHubSearchAdapte
         mSeachItemClickListener = searchItemClickListener;
     }
 
-    public void updateSearchResults(ArrayList<GitHubRepo> repos) {
+    public void updateSearchResults(List<GitHubRepo> repos) {
         mRepos = repos;
         notifyDataSetChanged();
     }
