@@ -1,8 +1,10 @@
 package com.example.android.githubsearch.data;
 
 import android.app.Application;
-import android.content.Context;
+import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
+
+import java.util.List;
 
 public class GitHubRepoRepository {
     private GitHubRepoDao mGitHubRepoDao;
@@ -18,6 +20,14 @@ public class GitHubRepoRepository {
 
     public void deleteGitHubRepo(GitHubRepo repo) {
         new DeleteAsyncTask(mGitHubRepoDao).execute(repo);
+    }
+
+    public LiveData<List<GitHubRepo>> getAllGitHubRepos() {
+        return mGitHubRepoDao.getAllRepos();
+    }
+
+    public LiveData<GitHubRepo> getGitHubRepoByName(String fullName) {
+        return mGitHubRepoDao.getRepoByName(fullName);
     }
 
     private static class InsertAsyncTask extends AsyncTask<GitHubRepo, Void, Void> {

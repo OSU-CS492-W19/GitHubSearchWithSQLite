@@ -1,7 +1,10 @@
 package com.example.android.githubsearch;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,6 +23,7 @@ public class RepoDetailActivity extends AppCompatActivity {
     private TextView mRepoDescriptionTV;
     private ImageView mRepoBookmarkIV;
 
+    private GitHubRepoViewModel mGitHubRepoViewModel;
     private GitHubRepo mRepo;
     private boolean mIsSaved = false;
 
@@ -33,6 +37,8 @@ public class RepoDetailActivity extends AppCompatActivity {
         mRepoDescriptionTV = findViewById(R.id.tv_repo_description);
         mRepoBookmarkIV = findViewById(R.id.iv_repo_bookmark);
 
+        mGitHubRepoViewModel = ViewModelProviders.of(this).get(GitHubRepoViewModel.class);
+
         mRepo = null;
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra(GitHubUtils.EXTRA_GITHUB_REPO)) {
@@ -40,17 +46,29 @@ public class RepoDetailActivity extends AppCompatActivity {
             mRepoNameTV.setText(mRepo.full_name);
             mRepoStarsTV.setText("" + mRepo.stargazers_count);
             mRepoDescriptionTV.setText(mRepo.description);
+
+            mGitHubRepoViewModel.getGitHubRepoByName(mRepo.full_name).observe(this, new Observer<GitHubRepo>() {
+                @Override
+                public void onChanged(@Nullable GitHubRepo repo) {
+                    if (repo != null) {
+                        mIsSaved = true;
+                        mRepoBookmarkIV.setImageResource(R.drawable.ic_bookmark_black_24dp);
+                    } else {
+                        mIsSaved = false;
+                        mRepoBookmarkIV.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
+                    }
+                }
+            });
         }
 
         mRepoBookmarkIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mRepo != null) {
-                    mIsSaved = !mIsSaved;
-                    if (mIsSaved) {
-                        mRepoBookmarkIV.setImageResource(R.drawable.ic_bookmark_black_24dp);
+                    if (!mIsSaved) {
+                        mGitHubRepoViewModel.insertGitHubRepo(mRepo);
                     } else {
-                        mRepoBookmarkIV.setImageResource(R.drawable.ic_bookmark_border_black_24dp);
+                        mGitHubRepoViewModel.deleteGitHubRepo(mRepo);
                     }
                 }
             }
